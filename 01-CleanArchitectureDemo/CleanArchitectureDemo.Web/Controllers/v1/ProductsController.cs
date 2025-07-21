@@ -1,4 +1,7 @@
 ﻿using CleanArchitectureDemo.Application.Features.Products.Commands.Create;
+using CleanArchitectureDemo.Application.Features.Products.Commands.Delete;
+using CleanArchitectureDemo.Application.Features.Products.Commands.Restore;
+using CleanArchitectureDemo.Application.Features.Products.Commands.Update;
 using CleanArchitectureDemo.Application.Features.Products.Queries.GetAll;
 using CleanArchitectureDemo.Application.Features.Products.Queries.GetById;
 using CleanArchitectureDemo.Web.Controllers.Base;
@@ -14,6 +17,34 @@ public class ProductsController : BaseController<ProductsController>
     {
         var id = await Mediator.Send(command, cancellationToken);
         return CreatedAtAction(nameof(GetById), new { id }, id);
+    }
+
+    [HttpPut("update")]
+    public async Task<IActionResult> Update([FromBody] UpdateProductCommand command, CancellationToken cancellationToken)
+    {
+        var result = await Mediator.Send(command, cancellationToken);
+        return result ? NoContent() : NotFound();
+    }
+
+    [HttpDelete("{id}/delete")]
+    public async Task<IActionResult> Delete(Guid id, CancellationToken cancellationToken)
+    {
+        await Mediator.Send(new DeleteProductCommand(id), cancellationToken);
+        return NoContent();
+    }
+
+    [HttpDelete("{id}/softDelete")]
+    public async Task<IActionResult> SoftDelete(Guid id, CancellationToken cancellationToken)
+    {
+        var result = await Mediator.Send(new SoftDeleteProductCommand(id), cancellationToken);
+        return result ? NoContent() : NotFound();
+    }
+
+    [HttpPost("{id}/restore")]
+    public async Task<IActionResult> Restore(Guid id, CancellationToken cancellationToken)
+    {
+        var result = await Mediator.Send(new RestoreProductCommand(id), cancellationToken);
+        return result ? NoContent() : NotFound();
     }
 
     [HttpGet("{id}/getById")]

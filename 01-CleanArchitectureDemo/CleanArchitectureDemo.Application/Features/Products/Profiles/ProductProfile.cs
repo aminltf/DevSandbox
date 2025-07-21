@@ -28,6 +28,22 @@ public class ProductProfile : Profile
             .ForMember(dest => dest.Status,
                         opt => opt.MapFrom(src => (ProductStatus)src.Status));
 
+        // Update
+        CreateMap<Product, UpdateProductDto>()
+            // Entity -> DTO
+            .ForMember(dest => dest.PriceAmount,
+                        opt => opt.MapFrom(src => src.Price.Amount))
+            .ForMember(dest => dest.PriceCurrency,
+                        opt => opt.MapFrom(src => src.Price.Currency))
+            .ForMember(dest => dest.Status,
+                        opt => opt.MapFrom(src => (int)src.Status))
+            .ReverseMap()
+            // DTO -> Entity
+            .ForMember(dest => dest.Price,
+                        opt => opt.MapFrom(src => new Money(src.PriceAmount, src.PriceCurrency)))
+            .ForMember(dest => dest.Status,
+                        opt => opt.MapFrom(src => (ProductStatus)src.Status));
+
         // GetById
         CreateMap<Product, ProductDetailDto>()
             .ForMember(dest => dest.PriceAmount,
@@ -49,8 +65,5 @@ public class ProductProfile : Profile
                         opt => opt.MapFrom(src => (int)src.Status))
             .ForMember(dest => dest.StatusTitle,
                         opt => opt.MapFrom(src => src.Status.GetDisplayName()));
-
-        CreateMap(typeof(PageResponse<>), typeof(PageResponse<>));
-
     }
 }
