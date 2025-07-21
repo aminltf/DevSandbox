@@ -16,11 +16,7 @@
 
   <ItemGroup>
     <ProjectReference Include="..\..\_shared\DevSandbox.Shared.Web\DevSandbox.Shared.Web.csproj" />
-    <ProjectReference Include="..\CleanArchitectureDemo.Application\CleanArchitectureDemo.Application.csproj" />
-  </ItemGroup>
-
-  <ItemGroup>
-    <Folder Include="Controllers\" />
+    <ProjectReference Include="..\CleanArchitectureDemo.Infrastructure\CleanArchitectureDemo.Infrastructure.csproj" />
   </ItemGroup>
 
 </Project>

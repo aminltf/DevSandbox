@@ -1,4 +1,5 @@
-﻿using CleanArchitectureDemo.Application.Pipelines;
+﻿using CleanArchitectureDemo.Application.Features.Products.Profiles;
+using CleanArchitectureDemo.Application.Pipelines;
 using FluentValidation;
 using MediatR;
 using Microsoft.Extensions.DependencyInjection;
@@ -15,14 +16,16 @@ public static class ApplicationServiceCollectionExtensions
             cfg.RegisterServicesFromAssembly(Assembly.GetExecutingAssembly()));
 
         // Register Mappings
-        //services.AddAutoMapper(Assembly.GetExecutingAssembly());
+        services.AddAutoMapper(cfg => {
+            cfg.AddProfile<ProductProfile>();
+        });
 
         // Register Validations
         services.AddValidatorsFromAssembly(Assembly.GetExecutingAssembly());
 
         // Register Pipeline Behaviors
-        services.AddTransient(typeof(IPipelineBehavior<,>), typeof(ValidationBehavior<,>));
-        services.AddTransient(typeof(IPipelineBehavior<,>), typeof(LoggingBehavior<,>));
+        //services.AddTransient(typeof(IPipelineBehavior<,>), typeof(ValidationBehavior<,>));
+        //services.AddTransient(typeof(IPipelineBehavior<,>), typeof(LoggingBehavior<,>));
 
         return services;
     }

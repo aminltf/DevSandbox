@@ -2,4 +2,4 @@
 
 namespace DevSandbox.Shared.Kernel.CQRS.Commands;
 
-public record DeleteCommand<TKey>(TKey Id) : ICommand;
+public record DeleteCommand<TKey, TResult>(TKey Id) : ICommand<TResult>;

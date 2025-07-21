@@ -18,11 +18,4 @@
     <ProjectReference Include="..\CleanArchitectureDemo.Domain\CleanArchitectureDemo.Domain.csproj" />
   </ItemGroup>
 
-  <ItemGroup>
-    <Folder Include="Features\Products\Commands\" />
-    <Folder Include="Features\Products\Dtos\" />
-    <Folder Include="Features\Products\Validators\" />
-    <Folder Include="Features\Products\Queries\" />
-  </ItemGroup>
-
 </Project>

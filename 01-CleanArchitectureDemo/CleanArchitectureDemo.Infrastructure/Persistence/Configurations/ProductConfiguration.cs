@@ -13,8 +13,10 @@ public class ProductConfiguration : IEntityTypeConfiguration<Product>
         builder.HasKey(p => p.Id);
 
         builder.Property(p => p.Name)
-            .IsRequired()
-            .HasMaxLength(100);
+            .HasMaxLength(100)
+            .IsRequired();
+
+        builder.HasIndex(p => p.Name).IsUnique();
 
         builder.Property(p => p.Status)
             .HasConversion<int>()

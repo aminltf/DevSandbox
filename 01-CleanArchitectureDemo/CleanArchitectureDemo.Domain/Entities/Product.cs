@@ -13,7 +13,7 @@ public class Product : BaseSoftDeletableEntity
 
     public Product() { }
 
-    public Product(string name, string description, Money price, int stock)
+    public Product(string name, Money price, int stock)
     {
         Name = name;
         Price = price;

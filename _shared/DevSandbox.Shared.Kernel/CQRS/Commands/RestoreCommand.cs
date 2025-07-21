@@ -2,4 +2,4 @@
 
 namespace DevSandbox.Shared.Kernel.CQRS.Commands;
 
-public record RestoreCommand<TKey>(TKey Id) : ICommand;
+public record RestoreCommand<TKey, TResult>(TKey Id) : ICommand<TResult>;

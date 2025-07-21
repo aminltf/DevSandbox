@@ -1,5 +1,6 @@
 ﻿#nullable disable
 
+using System.Linq.Expressions;
 using CleanArchitectureDemo.Infrastructure.Persistence.Contexts;
 using DevSandbox.Shared.Kernel.Abstractions.Repositories;
 using DevSandbox.Shared.Kernel.Base.Entities;
@@ -61,7 +62,9 @@ public class GenericRepository<TEntity> : IGenericRepository<TEntity> where TEnt
 
     public async Task<TEntity> GetByIdAsync(Guid id, CancellationToken cancellationToken)
     {
-        var entity = await _context.Set<TEntity>().FirstOrDefaultAsync(x => x.Id == id && !x.IsDeleted, cancellationToken);
+        var entity = await _context.Set<TEntity>()
+            .AsQueryable()
+            .FirstOrDefaultAsync(x => x.Id == id && !x.IsDeleted, cancellationToken);
 
         return entity;
     }
@@ -69,6 +72,7 @@ public class GenericRepository<TEntity> : IGenericRepository<TEntity> where TEnt
     public async Task<TEntity> GetByIdAsNoTrackingAsync(Guid id, CancellationToken cancellationToken)
     {
         var entity = await _context.Set<TEntity>()
+            .AsQueryable()
             .AsNoTracking()
             .FirstOrDefaultAsync(x => x.Id == id && !x.IsDeleted, cancellationToken);
 
@@ -78,6 +82,11 @@ public class GenericRepository<TEntity> : IGenericRepository<TEntity> where TEnt
     public async Task<bool> ExistsAsync(Guid id, CancellationToken cancellationToken)
     {
         return await _context.Set<TEntity>().AnyAsync(x => x.Id == id && !x.IsDeleted, cancellationToken);
+    }
+
+    public async Task<bool> AnyAsync(Expression<Func<TEntity, bool>> predicate, CancellationToken cancellationToken)
+    {
+        return await _context.Set<TEntity>().AnyAsync(predicate, cancellationToken);
     }
 
     public async Task AddAsync(TEntity entity, CancellationToken cancellationToken)
