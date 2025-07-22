@@ -1,4 +1,5 @@
-﻿using CleanArchitectureDemo.Domain.Entities;
+﻿using CleanArchitectureDemo.Application.Features.Products.Dtos;
+using CleanArchitectureDemo.Domain.Entities;
 using DevSandbox.Shared.Kernel.Abstractions.Repositories;
 using DevSandbox.Shared.Kernel.Paging;
 using DevSandbox.Shared.Kernel.Search;
@@ -13,5 +14,11 @@ public interface IProductRepository : IGenericRepository<Product>
         PageRequest page,
         SearchRequest search,
         SortOptions sort,
+        CancellationToken cancellationToken);
+    Task<PageResponse<Product>> GetReportAsync(
+        PageRequest page,
+        SearchRequest search,
+        SortOptions sort,
+        List<string>? selectedFields,
         CancellationToken cancellationToken);
 }

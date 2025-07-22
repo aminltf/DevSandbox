@@ -12,10 +12,7 @@ public class GenericRepository<TEntity> : IGenericRepository<TEntity> where TEnt
 {
     protected readonly ApplicationContext _context;
 
-    public GenericRepository(ApplicationContext context)
-    {
-        _context = context;
-    }
+    public GenericRepository(ApplicationContext context) => _context = context;
 
     public IQueryable<TEntity> AsQueryable(bool includeDeleted = false)
     {
@@ -30,7 +27,7 @@ public class GenericRepository<TEntity> : IGenericRepository<TEntity> where TEnt
         return query;
     }
 
-    public async Task<IReadOnlyList<TEntity>> GetAllAsync(CancellationToken cancellationToken)
+    public async Task<IEnumerable<TEntity>> GetAllAsync(CancellationToken cancellationToken)
     {
         return await _context.Set<TEntity>().ToListAsync(cancellationToken);
     }
@@ -43,7 +40,7 @@ public class GenericRepository<TEntity> : IGenericRepository<TEntity> where TEnt
             .ToListAsync(cancellationToken);
     }
 
-    public async Task<IReadOnlyList<TEntity>> GetAllDeletedAsync(CancellationToken cancellationToken)
+    public async Task<IEnumerable<TEntity>> GetAllDeletedAsync(CancellationToken cancellationToken)
     {
         return await _context.Set<TEntity>()
             .IgnoreQueryFilters()

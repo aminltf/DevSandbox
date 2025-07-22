@@ -64,4 +64,44 @@ public class ProductRepository : GenericRepository<Product>, IProductRepository
             PageSize = page.PageSize,
         };
     }
+
+    public async Task<PageResponse<Product>> GetReportAsync(
+        PageRequest page,
+        SearchRequest search,
+        SortOptions sort,
+        List<string>? selectedFields,
+        CancellationToken cancellationToken)
+    {
+        var query = _context.Products
+            .AsNoTracking()
+            .Where(x => !x.IsDeleted);
+
+        // Search
+        if (!string.IsNullOrWhiteSpace(search?.SearchTerm))
+        {
+            var term = $"%{search.SearchTerm.Trim()}%";
+            query = query.Where(x =>
+                EF.Functions.Like(x.CreatedAt.ToString(), term) ||
+                EF.Functions.Like(x.Name, term) ||
+                EF.Functions.Like(x.Price.Amount.ToString(), term) ||
+                EF.Functions.Like(x.Status.ToString(), term) ||
+                EF.Functions.Like(x.Stock.ToString(), term)
+            );
+        }
+
+        // Sorting & Paging
+        query = query.ApplySorting(sort);
+        var totalCount = await query.CountAsync(cancellationToken);
+        query = query.ApplyPaging(page);
+
+        var items = await query.ToListAsync(cancellationToken);
+
+        return new PageResponse<Product>
+        {
+            TotalCount = totalCount,
+            Items = items,
+            PageNumber = page.PageNumber,
+            PageSize = page.PageSize
+        };
+    }
 }

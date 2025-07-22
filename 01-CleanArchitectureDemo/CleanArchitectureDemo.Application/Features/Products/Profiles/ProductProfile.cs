@@ -65,5 +65,15 @@ public class ProductProfile : Profile
                         opt => opt.MapFrom(src => (int)src.Status))
             .ForMember(dest => dest.StatusTitle,
                         opt => opt.MapFrom(src => src.Status.GetDisplayName()));
+
+        // Report
+        CreateMap<Product, ProductReportDto>()
+            .ForMember(dest => dest.PriceAmount,
+                        opt => opt.MapFrom(src => src.Price.Amount))
+            .ForMember(dest => dest.PriceCurrency,
+                        opt => opt.MapFrom(src => src.Price.Currency))
+            .ForMember(dest => dest.StatusTitle,
+                        opt => opt.MapFrom(src => src.Status.GetDisplayName()));
+
     }
 }

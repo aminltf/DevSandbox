@@ -2,6 +2,7 @@
 using CleanArchitectureDemo.Application.Features.Products.Commands.Delete;
 using CleanArchitectureDemo.Application.Features.Products.Commands.Restore;
 using CleanArchitectureDemo.Application.Features.Products.Commands.Update;
+using CleanArchitectureDemo.Application.Features.Products.Queries.Export;
 using CleanArchitectureDemo.Application.Features.Products.Queries.GetAll;
 using CleanArchitectureDemo.Application.Features.Products.Queries.GetById;
 using CleanArchitectureDemo.Web.Controllers.Base;
@@ -60,5 +61,25 @@ public class ProductsController : BaseController<ProductsController>
     {
         var result = await Mediator.Send(query, cancellationToken);
         return Ok(result);
+    }
+
+    [HttpPost("export-to-excel")]
+    public async Task<IActionResult> ExportToExcel([FromBody] ExportProductToExcelQuery query, CancellationToken cancellationToken)
+    {
+        try
+        {
+            var fileContent = await Mediator.Send(query, cancellationToken);
+
+            if (fileContent == null || fileContent.Length == 0)
+                return BadRequest(new { error = "Exported file is empty." });
+
+            var fileName = $"Products_{DateTime.Now:yyyyMMdd_HHmmss}.xlsx";
+            const string contentType = "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet";
+            return File(fileContent, contentType, fileName);
+        }
+        catch (Exception ex)
+        {
+            return StatusCode(StatusCodes.Status500InternalServerError, new { error = ex.Message });
+        }
     }
 }

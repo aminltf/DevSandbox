@@ -6,9 +6,9 @@ namespace DevSandbox.Shared.Kernel.Abstractions.Repositories;
 public interface IGenericRepository<TEntity> where TEntity : BaseSoftDeletableEntity
 {
     IQueryable<TEntity> AsQueryable(bool includeDeleted = false);
-    Task<IReadOnlyList<TEntity>> GetAllAsync(CancellationToken cancellationToken);
+    Task<IEnumerable<TEntity>> GetAllAsync(CancellationToken cancellationToken);
     Task<IReadOnlyList<TEntity>> GetAllAsNoTrackingAsync(CancellationToken cancellationToken);
-    Task<IReadOnlyList<TEntity>> GetAllDeletedAsync(CancellationToken cancellationToken);
+    Task<IEnumerable<TEntity>> GetAllDeletedAsync(CancellationToken cancellationToken);
     Task<IReadOnlyList<TEntity>> GetAllDeletedAsNoTrackingAsync(CancellationToken cancellationToken);
     Task<TEntity> GetByIdAsync(Guid id, CancellationToken cancellationToken);
     Task<TEntity> GetByIdAsNoTrackingAsync(Guid id, CancellationToken cancellationToken);
