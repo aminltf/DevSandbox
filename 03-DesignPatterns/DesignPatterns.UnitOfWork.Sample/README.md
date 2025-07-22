@@ -17,23 +17,6 @@ This means that either all the operations succeed (are committed), or all fail (
 
 ---
 
-## 🗂️ Solution Structure
-
-├── Entities/
-│ └── Customer.cs
-├── Data/
-│ │ └── InMemoryDbContext.cs
-│ ├── Repositories/
-│ │ ├── ICustomerRepository.cs
-│ │ └── CustomerRepository.cs
-│ └── UnitOfWork/
-│	├── IUnitOfWork.cs
-│	└── UnitOfWork.cs
-├── Program.cs
-└── README.md
-
----
-
 ## 🚀 How to Run
 
 1. Clone or download this repository.
