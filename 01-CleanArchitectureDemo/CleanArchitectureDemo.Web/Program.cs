@@ -2,6 +2,8 @@ using CleanArchitectureDemo.Web.Extensions.DependencyInjection;
 
 var builder = WebApplication.CreateBuilder(args);
 
+Console.WriteLine("Connection String: " + builder.Configuration.GetConnectionString("DefaultConnection"));
+
 // Add services to the container.
 
 builder.Services.AddControllers();

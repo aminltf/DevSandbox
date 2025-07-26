@@ -7,6 +7,9 @@ using OtpDemo.DAL.Services;
 
 var builder = WebApplication.CreateBuilder(args);
 
+Console.WriteLine("JWT KEY: " + builder.Configuration["Jwt:Key"]);
+Console.WriteLine("Connection String: " + builder.Configuration.GetConnectionString("DefaultConnection"));
+
 builder.Services.AddDbContext<IdentityAppDbContext>(options =>
     options.UseSqlServer(builder.Configuration.GetConnectionString("DefaultConnection")));
 
