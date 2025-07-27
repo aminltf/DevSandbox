@@ -63,6 +63,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "UserManagementDemo.Infrastr
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "UserManagementDemo.Web", "06-UserManagementDemo\UserManagementDemo.Web\UserManagementDemo.Web.csproj", "{2418C132-261F-4857-A978-1F42678F0C3F}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "DesignPatterns.Strategy.Sample", "03-DesignPatterns\DesignPatterns.Strategy.Sample\DesignPatterns.Strategy.Sample.csproj", "{7E45997D-9AA5-4395-9799-7ED4174FF0BE}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -161,6 +163,10 @@ Global
 		{2418C132-261F-4857-A978-1F42678F0C3F}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{2418C132-261F-4857-A978-1F42678F0C3F}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{2418C132-261F-4857-A978-1F42678F0C3F}.Release|Any CPU.Build.0 = Release|Any CPU
+		{7E45997D-9AA5-4395-9799-7ED4174FF0BE}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{7E45997D-9AA5-4395-9799-7ED4174FF0BE}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{7E45997D-9AA5-4395-9799-7ED4174FF0BE}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{7E45997D-9AA5-4395-9799-7ED4174FF0BE}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -189,6 +195,7 @@ Global
 		{57126127-4B89-46F3-9A8F-664980D630D0} = {1BD0597F-783E-4BD3-A3F4-F34099BD42F8}
 		{26BEAD51-5BF6-4A78-8BAC-9B13C3F668F1} = {1BD0597F-783E-4BD3-A3F4-F34099BD42F8}
 		{2418C132-261F-4857-A978-1F42678F0C3F} = {1BD0597F-783E-4BD3-A3F4-F34099BD42F8}
+		{7E45997D-9AA5-4395-9799-7ED4174FF0BE} = {ADE189C1-C0BC-43FA-9FC3-C97342804CF2}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {CDB1B94D-0E43-4A7A-9949-A0FD7B493340}
