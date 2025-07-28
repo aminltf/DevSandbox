@@ -4,7 +4,6 @@ using Microsoft.Extensions.DependencyInjection;
 using UserManagementDemo.Application.Common.Interfaces.Repositories;
 using UserManagementDemo.Application.Common.Interfaces.Security;
 using UserManagementDemo.Application.Common.Interfaces.Services;
-using UserManagementDemo.Application.Common.Models;
 using UserManagementDemo.Infrastructure.Identity.Contexts;
 using UserManagementDemo.Infrastructure.Identity.Repositories;
 using UserManagementDemo.Infrastructure.Identity.Security;
@@ -24,6 +23,7 @@ public static class DependencyInjection
         services.AddScoped<IUserRepository, UserRepository>();
         services.AddScoped<ILoginLogRepository, LoginLogRepository>();
         services.AddScoped<IRefreshTokenRepository, RefreshTokenRepository>();
+        services.AddScoped<IPasswordResetRequestRepository, PasswordResetRequestRepository>();
         services.AddScoped<IIdentityUnitOfWork, IdentityUnitOfWork>();
 
         // Register Security
@@ -32,7 +32,8 @@ public static class DependencyInjection
         // Register Services
         services.AddScoped<ICurrentUserService, CurrentUserService>();
         services.AddScoped<ITokenService, TokenService>();
-
+        services.AddScoped<IEmailService, FakeEmailService>();
+        services.AddScoped<ISmsService, FakeSmsService>();
 
         return services;
     }

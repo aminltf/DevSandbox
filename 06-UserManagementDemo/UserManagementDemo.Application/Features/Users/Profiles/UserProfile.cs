@@ -16,5 +16,11 @@ public class UserProfile : Profile
         CreateMap<ApplicationUser, GetUserByIdResultDto>()
             .ForMember(dest => dest.Role, opt => opt.MapFrom(src => src.Role.ToString()))
             .ForMember(dest => dest.Status, opt => opt.MapFrom(src => src.Status.ToString()));
+
+        CreateMap<ApplicationUser, UserListDto>()
+             .ForMember(dest => dest.Role, opt => opt.MapFrom(src => src.Role.ToString()))
+             .ForMember(dest => dest.Status, opt => opt.MapFrom(src => src.Status.ToString()))
+             .ForMember(dest => dest.FullName, opt => opt.MapFrom(src => $"{src.FirstName} {src.LastName}".Trim()))
+             .ForMember(dest => dest.LastModifiedAt, opt => opt.MapFrom(src => src.LastModifiedBy != null ? src.LastModifiedAt : null));
     }
 }

@@ -6,6 +6,8 @@ using UserManagementDemo.Application.Features.Users.Dtos;
 using UserManagementDemo.Application.Features.Users.Queries;
 using UserManagementDemo.Application.Features.RefreshTokens.Commands;
 using UserManagementDemo.Application.Features.RefreshTokens.Dtos;
+using UserManagementDemo.Application.Features.PasswordResetRequests.Commands;
+using UserManagementDemo.Application.Features.PasswordResetRequests.Dtos;
 
 namespace UserManagementDemo.Web.Controllers;
 
@@ -40,6 +42,14 @@ public class UsersController : ControllerBase
             return NotFound();
 
         return Ok(user);
+    }
+
+    [HttpGet("get-users")]
+    //[Authorize(Roles = "Admin,Manager")]
+    public async Task<IActionResult> GetUsers([FromQuery] GetUsersQuery query, CancellationToken cancellationToken)
+    {
+        var result = await _mediator.Send(query, cancellationToken);
+        return Ok(result);
     }
 
     [HttpPost("login")]
@@ -109,4 +119,16 @@ public class UsersController : ControllerBase
 
         return Ok(new { message = "Logout successful." });
     }
+
+    [HttpPost("forgot-password")]
+    //[AllowAnonymous]
+    public async Task<IActionResult> ForgotPassword([FromBody] ForgotPasswordDto dto)
+    {
+        var command = new ForgotPasswordCommand(dto.UserNameOrMobile, dto.Channel);
+
+        var result = await _mediator.Send(command);
+
+        return Ok(result);
+    }
+
 }

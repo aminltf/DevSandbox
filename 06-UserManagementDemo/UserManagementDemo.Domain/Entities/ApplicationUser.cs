@@ -24,6 +24,7 @@ public class ApplicationUser : IdentityUser<Guid>, IAuditableEntity, ISoftDeleta
 
     public ICollection<RefreshToken> RefreshTokens { get; set; } = new List<RefreshToken>();
     public ICollection<LoginLog> LoginLogs { get; set; } = new List<LoginLog>();
+    public ICollection<PasswordResetRequest> PasswordResetRequests { get; set; } = new List<PasswordResetRequest>();
 
     public ApplicationUser()
     {

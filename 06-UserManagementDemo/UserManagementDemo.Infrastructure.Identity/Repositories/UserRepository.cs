@@ -59,6 +59,17 @@ public class UserRepository : IUserRepository // ToDo: Warning for SaveChanges
     public async Task<bool> ExistsByUserNameAsync(string userName, CancellationToken cancellationToken = default)
         => await _context.Users.AnyAsync(u => u.UserName == userName && u.Status != UserStatus.Deleted, cancellationToken);
 
+    public async Task<ApplicationUser?> GetByUserNameOrMobileOrEmailAsync(string userNameOrMobileOrEmail, CancellationToken cancellationToken = default)
+    {
+        return await _context.Users
+            .FirstOrDefaultAsync(x =>
+                x.UserName == userNameOrMobileOrEmail ||
+                x.Email == userNameOrMobileOrEmail ||
+                x.PhoneNumber == userNameOrMobileOrEmail,
+                cancellationToken);
+    }
+
+
     public async Task<IReadOnlyList<ApplicationUser>> GetByStatusAsync(UserStatus status, CancellationToken cancellationToken = default)
         => await _context.Users.Where(u => u.Status == status).ToListAsync(cancellationToken);
 

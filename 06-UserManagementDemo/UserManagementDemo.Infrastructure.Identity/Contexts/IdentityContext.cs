@@ -13,6 +13,7 @@ public class IdentityContext : IdentityDbContext<ApplicationUser, IdentityRole<G
 
     public DbSet<RefreshToken> RefreshTokens { get; set; }
     public DbSet<LoginLog> LoginLogs { get; set; }
+    public DbSet<PasswordResetRequest> PasswordResetRequests { get; set; }
 
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
@@ -21,6 +22,7 @@ public class IdentityContext : IdentityDbContext<ApplicationUser, IdentityRole<G
         modelBuilder.ApplyConfiguration(new ApplicationUserConfiguration());
         modelBuilder.ApplyConfiguration(new RefreshTokenConfiguration());
         modelBuilder.ApplyConfiguration(new LoginLogConfiguration());
+        modelBuilder.ApplyConfiguration(new PasswordResetRequestConfiguration());
 
         modelBuilder.Entity<ApplicationUser>().ToTable("Users");
         modelBuilder.Entity<IdentityRole<Guid>>().ToTable("Roles");
