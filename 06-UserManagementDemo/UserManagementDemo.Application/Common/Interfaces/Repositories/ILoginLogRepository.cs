@@ -3,7 +3,7 @@ using DevSandbox.Shared.Kernel.Search;
 using DevSandbox.Shared.Kernel.Sorting;
 using UserManagementDemo.Domain.Entities;
 
-namespace UserManagementDemo.Application.Common.Interfaces;
+namespace UserManagementDemo.Application.Common.Interfaces.Repositories;
 
 public interface ILoginLogRepository
 {
@@ -17,11 +17,7 @@ public interface ILoginLogRepository
     Task<IReadOnlyList<LoginLog>> GetByUserIdAsync(Guid userId, CancellationToken cancellationToken = default);
     Task<IReadOnlyList<LoginLog>> GetByUserIdAsNoTrackingAsync(Guid userId, CancellationToken cancellationToken = default);
 
-    Task<PageResponse<LoginLog>> GetPagedAsync(
-        PageRequest pagination,
-        SearchRequest search,
-        SortOptions sortOptions,
-        CancellationToken cancellationToken = default);
+    Task<PageResponse<LoginLog>> GetPagedAsync(PageRequest pagination, SearchRequest search, SortOptions sortOptions, CancellationToken cancellationToken = default);
 
     Task AddAsync(LoginLog log, CancellationToken cancellationToken = default);
     Task<int> GetCountAsync(Guid? userId = null, CancellationToken cancellationToken = default);

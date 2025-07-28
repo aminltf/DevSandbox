@@ -15,10 +15,6 @@
   </ItemGroup>
 
   <ItemGroup>
-    <Folder Include="Controllers\" />
-  </ItemGroup>
-
-  <ItemGroup>
     <ProjectReference Include="..\UserManagementDemo.Infrastructure.Identity\UserManagementDemo.Infrastructure.Identity.csproj" />
   </ItemGroup>
 

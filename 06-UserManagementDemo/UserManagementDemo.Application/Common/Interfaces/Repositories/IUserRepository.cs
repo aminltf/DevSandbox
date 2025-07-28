@@ -4,7 +4,7 @@ using DevSandbox.Shared.Kernel.Sorting;
 using UserManagementDemo.Domain.Entities;
 using UserManagementDemo.Domain.Enums;
 
-namespace UserManagementDemo.Application.Common.Interfaces;
+namespace UserManagementDemo.Application.Common.Interfaces.Repositories;
 
 public interface IUserRepository
 {
@@ -25,11 +25,7 @@ public interface IUserRepository
 
     Task<IReadOnlyList<ApplicationUser>> GetByStatusAsync(UserStatus status, CancellationToken cancellationToken = default);
 
-    Task<PageResponse<ApplicationUser>> GetPagedAsync(
-        PageRequest pagination,
-        SearchRequest search,
-        SortOptions sortOptions,
-        CancellationToken cancellationToken = default);
+    Task<PageResponse<ApplicationUser>> GetPagedAsync(PageRequest pagination, SearchRequest search, SortOptions sortOptions, CancellationToken cancellationToken = default);
 
     Task AddAsync(ApplicationUser entity, CancellationToken cancellationToken = default);
     Task UpdateAsync(ApplicationUser entity, CancellationToken cancellationToken = default);
@@ -41,9 +37,5 @@ public interface IUserRepository
     Task<bool> ActivateAsync(ApplicationUser user, CancellationToken cancellationToken = default);
     Task<bool> DeactivateAsync(ApplicationUser user, CancellationToken cancellationToken = default);
 
-    Task<bool> ChangePasswordAsync(
-        ApplicationUser user,
-        string newPasswordHash,
-        DateTime passwordChangedAt,
-        CancellationToken cancellationToken = default);
+    Task<bool> ChangePasswordAsync(ApplicationUser user, string newPasswordHash, DateTime passwordChangedAt, CancellationToken cancellationToken = default);
 }
