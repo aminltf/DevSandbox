@@ -4,12 +4,13 @@ using Microsoft.AspNetCore.Authorization;
 using UserManagementDemo.Application.Features.Users.Commands;
 using UserManagementDemo.Application.Features.Users.Dtos;
 using UserManagementDemo.Application.Features.Users.Queries;
+using UserManagementDemo.Application.Features.RefreshTokens.Commands;
+using UserManagementDemo.Application.Features.RefreshTokens.Dtos;
 
 namespace UserManagementDemo.Web.Controllers;
 
-
-//[ApiController]
-//[Route("api/[controller]")]
+[ApiController]
+[Route("api/[controller]")]
 //[Authorize(Roles = "Admin")]
 public class UsersController : ControllerBase
 {
@@ -21,19 +22,19 @@ public class UsersController : ControllerBase
     }
 
     [HttpPost("create")]
-    public async Task<IActionResult> Create([FromBody] CreateUserDto dto)
+    public async Task<IActionResult> Create([FromBody] CreateUserDto dto, CancellationToken cancellationToken)
     {
         var command = new CreateUserCommand(dto);
-        var result = await _mediator.Send(command);
+        var result = await _mediator.Send(command, cancellationToken);
 
         return CreatedAtAction(nameof(GetById), new { id = result.UserId }, result);
     }
 
     [HttpGet("{id:guid}/get-by-id")]
-    public async Task<IActionResult> GetById(Guid id)
+    public async Task<IActionResult> GetById(Guid id, CancellationToken cancellationToken)
     {
         var query = new GetUserByIdQuery(id);
-        var user = await _mediator.Send(query);
+        var user = await _mediator.Send(query, cancellationToken);
 
         if (user is null)
             return NotFound();
@@ -43,10 +44,10 @@ public class UsersController : ControllerBase
 
     [HttpPost("login")]
     //[AllowAnonymous]
-    public async Task<IActionResult> Login([FromBody] LoginDto dto)
+    public async Task<IActionResult> Login([FromBody] LoginDto dto, CancellationToken cancellationToken)
     {
         var command = new LoginCommand(dto);
-        var result = await _mediator.Send(command);
+        var result = await _mediator.Send(command, cancellationToken);
 
         if (result.Token is null && !result.IsPasswordChangeRequired)
             return Unauthorized(new { result.Message });
@@ -59,10 +60,10 @@ public class UsersController : ControllerBase
 
     [HttpPost("change-password")]
     //[AllowAnonymous]
-    public async Task<IActionResult> ChangePassword([FromBody] ChangePasswordDto dto)
+    public async Task<IActionResult> ChangePassword([FromBody] ChangePasswordDto dto, CancellationToken cancellationToken)
     {
         var command = new ChangePasswordCommand(dto);
-        var result = await _mediator.Send(command);
+        var result = await _mediator.Send(command, cancellationToken);
 
         if (!result.Success)
             return BadRequest(new { result.Message });
@@ -70,4 +71,42 @@ public class UsersController : ControllerBase
         return Ok(result);
     }
 
+    [HttpPost("refresh-token")]
+    //[AllowAnonymous]
+    public async Task<IActionResult> RefreshToken([FromBody] RefreshTokenRequestDto dto, CancellationToken cancellationToken)
+    {
+        var command = new RefreshTokenCommand(dto);
+        var result = await _mediator.Send(command, cancellationToken);
+
+        if (result.Token == null)
+            return Unauthorized(new { message = result.Message ?? "Invalid refresh token." });
+
+        return Ok(result);
+    }
+
+    [HttpPost("{userId:guid}/revoke-all-refresh-tokens")]
+    //[Authorize(Roles = "Admin,Manager")]
+    public async Task<IActionResult> RevokeAllRefreshTokens(Guid userId, CancellationToken cancellationToken)
+    {
+        var command = new RevokeAllRefreshTokensCommand(userId);
+        var result = await _mediator.Send(command, cancellationToken);
+
+        if (!result)
+            return BadRequest(new { message = "Failed to revoke refresh tokens." });
+
+        return Ok(new { message = "All refresh tokens revoked successfully." });
+    }
+
+    [HttpPost("logout")]
+    //[AllowAnonymous]
+    public async Task<IActionResult> Logout([FromBody] RefreshTokenRequestDto dto, CancellationToken cancellationToken)
+    {
+        var command = new LogoutCommand(dto.RefreshToken);
+        var result = await _mediator.Send(command, cancellationToken);
+
+        if (!result)
+            return BadRequest(new { message = "Logout failed or token is already revoked." });
+
+        return Ok(new { message = "Logout successful." });
+    }
 }

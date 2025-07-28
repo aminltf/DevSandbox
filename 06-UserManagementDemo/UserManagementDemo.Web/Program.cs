@@ -1,8 +1,6 @@
 using UserManagementDemo.Application;
-using UserManagementDemo.Application.Common.Interfaces.Services;
 using UserManagementDemo.Application.Common.Models;
 using UserManagementDemo.Infrastructure.Identity;
-using UserManagementDemo.Infrastructure.Identity.Services;
 
 var builder = WebApplication.CreateBuilder(args);
 

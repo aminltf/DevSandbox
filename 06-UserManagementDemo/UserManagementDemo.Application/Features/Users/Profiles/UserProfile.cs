@@ -1,5 +1,4 @@
 ﻿using AutoMapper;
-using DevSandbox.Shared.Kernel.Extensions;
 using UserManagementDemo.Application.Features.Users.Dtos;
 using UserManagementDemo.Domain.Entities;
 using UserManagementDemo.Domain.Enums;

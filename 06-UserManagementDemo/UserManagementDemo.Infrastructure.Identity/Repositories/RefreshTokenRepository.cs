@@ -41,4 +41,10 @@ public class RefreshTokenRepository : IRefreshTokenRepository
         await _context.RefreshTokens.AddAsync(refreshToken, cancellationToken);
         await _context.SaveChangesAsync(cancellationToken);
     }
+
+    public async Task<RefreshToken?> GetByTokenAsync(string token, CancellationToken cancellationToken = default)
+    {
+        return await _context.RefreshTokens
+            .FirstOrDefaultAsync(r => r.Token == token, cancellationToken);
+    }
 }

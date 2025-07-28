@@ -14,6 +14,9 @@ public class RefreshTokenConfiguration : IEntityTypeConfiguration<RefreshToken>
             .HasMaxLength(512)
             .IsRequired();
 
+        // Unique Index for Token
+        builder.HasIndex(r => r.Token).IsUnique();
+
         builder.Property(r => r.CreatedByIp)
             .HasMaxLength(50)
             .IsRequired(false);
