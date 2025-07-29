@@ -13,7 +13,7 @@ public class IdentityContext : IdentityDbContext<ApplicationUser, IdentityRole<G
 
     public DbSet<RefreshToken> RefreshTokens { get; set; }
     public DbSet<LoginLog> LoginLogs { get; set; }
-    public DbSet<CredentialResetToken> PasswordResetRequests { get; set; }
+    public DbSet<CredentialResetToken> CredentialResetTokens { get; set; }
 
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {

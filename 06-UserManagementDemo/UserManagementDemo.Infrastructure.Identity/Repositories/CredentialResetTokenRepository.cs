@@ -17,7 +17,7 @@ public class CredentialResetTokenRepository : ICredentialResetTokenRepository
     public async Task<CredentialResetToken?> GetValidRequestByCodeAsync(string code, CancellationToken cancellationToken = default)
     {
         var now = DateTime.UtcNow;
-        return await _context.PasswordResetRequests
+        return await _context.CredentialResetTokens
             .FirstOrDefaultAsync(r =>
                 r.ResetCode == code &&
                 !r.IsUsed &&
@@ -27,19 +27,19 @@ public class CredentialResetTokenRepository : ICredentialResetTokenRepository
 
     public async Task AddAsync(CredentialResetToken request, CancellationToken cancellationToken = default)
     {
-        await _context.PasswordResetRequests.AddAsync(request, cancellationToken);
+        await _context.CredentialResetTokens.AddAsync(request, cancellationToken);
     }
     
     public Task UpdateAsync(CredentialResetToken entity, CancellationToken cancellationToken = default)
     {
-        _context.PasswordResetRequests.Update(entity);
+        _context.CredentialResetTokens.Update(entity);
         return Task.CompletedTask;
     }
 
     public async Task<CredentialResetToken?> GetByCodeAsync(string code, CancellationToken cancellationToken = default)
     {
         // Only unused and not expired
-        return await _context.PasswordResetRequests
+        return await _context.CredentialResetTokens
             .FirstOrDefaultAsync(r =>
                 r.ResetCode == code &&
                 !r.IsUsed &&
@@ -49,7 +49,7 @@ public class CredentialResetTokenRepository : ICredentialResetTokenRepository
 
     public async Task InvalidateAllForUserAsync(Guid userId, CancellationToken cancellationToken = default)
     {
-        var all = await _context.PasswordResetRequests
+        var all = await _context.CredentialResetTokens
             .Where(r => r.UserId == userId && !r.IsUsed && r.ExpiresAt > DateTime.UtcNow)
             .ToListAsync(cancellationToken);
 
@@ -62,7 +62,7 @@ public class CredentialResetTokenRepository : ICredentialResetTokenRepository
 
     public async Task<int> CountRecentRequestsAsync(Guid userId, DateTime from, CancellationToken cancellationToken = default)
     {
-        return await _context.PasswordResetRequests
+        return await _context.CredentialResetTokens
             .CountAsync(r => r.UserId == userId && r.RequestedAt >= from, cancellationToken);
     }
 }

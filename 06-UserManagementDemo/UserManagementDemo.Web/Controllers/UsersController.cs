@@ -32,6 +32,35 @@ public class UsersController : ControllerBase
         return CreatedAtAction(nameof(GetById), new { id = result.UserId }, result);
     }
 
+    [HttpPut("{id:guid}/update")]
+    public async Task<IActionResult> UpdateUser(Guid id, [FromBody] UpdateUserDto dto)
+    {
+        dto.Id = id;
+        var result = await _mediator.Send(new UpdateUserCommand(dto));
+        if (!result.Success)
+            return BadRequest(result);
+        return Ok(result);
+    }
+
+    [HttpPost("{id:guid}/activate")]
+    public async Task<IActionResult> ActivateUser(Guid id)
+    {
+        var result = await _mediator.Send(new ActivateUserCommand(id));
+        if (!result.Success)
+            return BadRequest(result);
+        return Ok(result);
+    }
+
+    [HttpPost("{id:guid}/deactivate")]
+    public async Task<IActionResult> DeactivateUser(Guid id)
+    {
+        var result = await _mediator.Send(new DeactivateUserCommand(id));
+        if (!result.Success)
+            return BadRequest(result);
+        return Ok(result);
+    }
+
+
     [HttpGet("{id:guid}/get-by-id")]
     public async Task<IActionResult> GetById(Guid id, CancellationToken cancellationToken)
     {
