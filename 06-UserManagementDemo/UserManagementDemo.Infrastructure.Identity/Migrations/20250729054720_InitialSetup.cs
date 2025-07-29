@@ -42,6 +42,7 @@ namespace UserManagementDemo.Infrastructure.Identity.Migrations
                     Role = table.Column<int>(type: "int", nullable: false),
                     Status = table.Column<int>(type: "int", nullable: false),
                     IsPasswordChangeRequired = table.Column<bool>(type: "bit", nullable: false),
+                    PasswordChangedAt = table.Column<DateTime>(type: "datetime2", nullable: false),
                     UserName = table.Column<string>(type: "nvarchar(256)", maxLength: 256, nullable: true),
                     NormalizedUserName = table.Column<string>(type: "nvarchar(256)", maxLength: 256, nullable: true),
                     Email = table.Column<string>(type: "nvarchar(256)", maxLength: 256, nullable: true),
@@ -79,6 +80,31 @@ namespace UserManagementDemo.Infrastructure.Identity.Migrations
                         name: "FK_RoleClaims_Roles_RoleId",
                         column: x => x.RoleId,
                         principalTable: "Roles",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Cascade);
+                });
+
+            migrationBuilder.CreateTable(
+                name: "CredentialResetTokens",
+                columns: table => new
+                {
+                    Id = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
+                    UserId = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
+                    ResetCode = table.Column<string>(type: "nvarchar(64)", maxLength: 64, nullable: false),
+                    Channel = table.Column<string>(type: "nvarchar(10)", maxLength: 10, nullable: false),
+                    RequestedAt = table.Column<DateTime>(type: "datetime2", nullable: false),
+                    ExpiresAt = table.Column<DateTime>(type: "datetime2", nullable: false),
+                    IpAddress = table.Column<string>(type: "nvarchar(50)", maxLength: 50, nullable: true),
+                    IsUsed = table.Column<bool>(type: "bit", nullable: false),
+                    UsedAt = table.Column<DateTime>(type: "datetime2", nullable: true)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_CredentialResetTokens", x => x.Id);
+                    table.ForeignKey(
+                        name: "FK_CredentialResetTokens_Users_UserId",
+                        column: x => x.UserId,
+                        principalTable: "Users",
                         principalColumn: "Id",
                         onDelete: ReferentialAction.Cascade);
                 });
@@ -214,9 +240,31 @@ namespace UserManagementDemo.Infrastructure.Identity.Migrations
                 });
 
             migrationBuilder.CreateIndex(
+                name: "IX_CredentialResetTokens_ResetCode",
+                table: "CredentialResetTokens",
+                column: "ResetCode",
+                unique: true);
+
+            migrationBuilder.CreateIndex(
+                name: "IX_CredentialResetTokens_UserId_IsUsed_ExpiresAt",
+                table: "CredentialResetTokens",
+                columns: new[] { "UserId", "IsUsed", "ExpiresAt" });
+
+            migrationBuilder.CreateIndex(
+                name: "IX_CredentialResetTokens_UserId_RequestedAt",
+                table: "CredentialResetTokens",
+                columns: new[] { "UserId", "RequestedAt" });
+
+            migrationBuilder.CreateIndex(
                 name: "IX_LoginLogs_UserId",
                 table: "LoginLogs",
                 column: "UserId");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_RefreshTokens_Token",
+                table: "RefreshTokens",
+                column: "Token",
+                unique: true);
 
             migrationBuilder.CreateIndex(
                 name: "IX_RefreshTokens_UserId",
@@ -266,6 +314,9 @@ namespace UserManagementDemo.Infrastructure.Identity.Migrations
         /// <inheritdoc />
         protected override void Down(MigrationBuilder migrationBuilder)
         {
+            migrationBuilder.DropTable(
+                name: "CredentialResetTokens");
+
             migrationBuilder.DropTable(
                 name: "LoginLogs");
 

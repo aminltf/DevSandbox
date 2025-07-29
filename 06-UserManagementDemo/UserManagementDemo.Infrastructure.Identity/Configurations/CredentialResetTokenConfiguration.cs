@@ -4,11 +4,11 @@ using UserManagementDemo.Domain.Entities;
 
 namespace UserManagementDemo.Infrastructure.Identity.Configurations;
 
-public class PasswordResetRequestConfiguration : IEntityTypeConfiguration<PasswordResetRequest>
+public class CredentialResetTokenConfiguration : IEntityTypeConfiguration<CredentialResetToken>
 {
-    public void Configure(EntityTypeBuilder<PasswordResetRequest> builder)
+    public void Configure(EntityTypeBuilder<CredentialResetToken> builder)
     {
-        builder.ToTable("PasswordResetRequests");
+        builder.ToTable("CredentialResetTokens");
 
         builder.HasKey(x => x.Id);
 
@@ -26,9 +26,6 @@ public class PasswordResetRequestConfiguration : IEntityTypeConfiguration<Passwo
         builder.Property(x => x.ExpiresAt)
             .IsRequired();
 
-        builder.Property(x => x.CompletedAt)
-            .IsRequired(false);
-
         builder.Property(x => x.IpAddress)
             .HasMaxLength(50)
             .IsRequired(false);
@@ -36,8 +33,11 @@ public class PasswordResetRequestConfiguration : IEntityTypeConfiguration<Passwo
         builder.Property(x => x.IsUsed)
             .IsRequired();
 
+        builder.Property(x => x.UsedAt)
+            .IsRequired(false);
+        
         builder.HasOne(x => x.User)
-            .WithMany(u => u.PasswordResetRequests)
+            .WithMany(u => u.CredentialResetTokens)
             .HasForeignKey(x => x.UserId)
             .OnDelete(DeleteBehavior.Cascade);
 

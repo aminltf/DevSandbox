@@ -5,7 +5,7 @@ public interface IIdentityUnitOfWork : IAsyncDisposable
     IUserRepository User { get; }
     IRefreshTokenRepository RefreshToken { get; }
     ILoginLogRepository LoginLog { get; }
-    IPasswordResetRequestRepository PasswordResetRequest { get; }
+    ICredentialResetTokenRepository CredentialResetToken { get; }
 
     Task<int> CommitAsync(CancellationToken cancellationToken = default);
 }

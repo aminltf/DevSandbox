@@ -2,17 +2,13 @@
 
 namespace UserManagementDemo.Domain.Entities;
 
-public class LoginLog
+public class LoginLog : BaseEntity
 {
-    public Guid Id { get; set; }
     public Guid UserId { get; set; }
     public DateTime LoginTime { get; set; }
     public string? IpAddress { get; set; }
 
     public ApplicationUser User { get; set; } = default!;
 
-    public LoginLog()
-    {
-        
-    }
+    public LoginLog() { }
 }

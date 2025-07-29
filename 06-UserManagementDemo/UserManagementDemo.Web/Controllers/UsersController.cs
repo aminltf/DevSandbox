@@ -124,11 +124,18 @@ public class UsersController : ControllerBase
     //[AllowAnonymous]
     public async Task<IActionResult> ForgotPassword([FromBody] ForgotPasswordDto dto)
     {
-        var command = new ForgotPasswordCommand(dto.UserNameOrMobile, dto.Channel);
-
-        var result = await _mediator.Send(command);
-
+        var result = await _mediator.Send(new ForgotPasswordCommand(dto));
+        // Always return 200 OK (never reveal if user exists)
         return Ok(result);
     }
 
+    [HttpPost("reset-password")]
+    public async Task<IActionResult> ResetPassword([FromBody] ResetPasswordDto dto)
+    {
+        var result = await _mediator.Send(new ResetPasswordCommand(dto));
+        if (!result.Success)
+            return BadRequest(result);
+
+        return Ok(result);
+    }
 }

@@ -12,19 +12,19 @@ public class IdentityUnitOfWork : IIdentityUnitOfWork
         IUserRepository user,
         ILoginLogRepository loginLog,
         IRefreshTokenRepository refreshToken,
-        IPasswordResetRequestRepository passwordResetRequest)
+        ICredentialResetTokenRepository credentialResetToken)
     {
         _context = context;
         User = user;
         LoginLog = loginLog;
         RefreshToken = refreshToken;
-        PasswordResetRequest = passwordResetRequest;
+        CredentialResetToken = credentialResetToken;
     }
 
     public IUserRepository User { get; }
     public ILoginLogRepository LoginLog { get; }
     public IRefreshTokenRepository RefreshToken { get; }
-    public IPasswordResetRequestRepository PasswordResetRequest { get; }
+    public ICredentialResetTokenRepository CredentialResetToken { get; }
 
     public async ValueTask DisposeAsync()
             => await _context.DisposeAsync();

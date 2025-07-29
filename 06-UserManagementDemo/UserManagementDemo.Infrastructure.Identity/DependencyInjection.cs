@@ -1,9 +1,11 @@
-﻿using Microsoft.EntityFrameworkCore;
+﻿using Microsoft.AspNetCore.Identity;
+using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using UserManagementDemo.Application.Common.Interfaces.Repositories;
 using UserManagementDemo.Application.Common.Interfaces.Security;
 using UserManagementDemo.Application.Common.Interfaces.Services;
+using UserManagementDemo.Domain.Entities;
 using UserManagementDemo.Infrastructure.Identity.Contexts;
 using UserManagementDemo.Infrastructure.Identity.Repositories;
 using UserManagementDemo.Infrastructure.Identity.Security;
@@ -23,7 +25,7 @@ public static class DependencyInjection
         services.AddScoped<IUserRepository, UserRepository>();
         services.AddScoped<ILoginLogRepository, LoginLogRepository>();
         services.AddScoped<IRefreshTokenRepository, RefreshTokenRepository>();
-        services.AddScoped<IPasswordResetRequestRepository, PasswordResetRequestRepository>();
+        services.AddScoped<ICredentialResetTokenRepository, CredentialResetTokenRepository>();
         services.AddScoped<IIdentityUnitOfWork, IdentityUnitOfWork>();
 
         // Register Security

@@ -2,6 +2,6 @@
 
 public class ResetPasswordDto
 {
-    public string Code { get; set; } = default!;
+    public string ResetCode { get; set; } = default!;
     public string NewPassword { get; set; } = default!;
 }

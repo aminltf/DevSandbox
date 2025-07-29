@@ -265,6 +265,53 @@ namespace UserManagementDemo.Infrastructure.Identity.Migrations
                     b.ToTable("Users", (string)null);
                 });
 
+            modelBuilder.Entity("UserManagementDemo.Domain.Entities.CredentialResetToken", b =>
+                {
+                    b.Property<Guid>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("uniqueidentifier");
+
+                    b.Property<string>("Channel")
+                        .IsRequired()
+                        .HasMaxLength(10)
+                        .HasColumnType("nvarchar(10)");
+
+                    b.Property<DateTime>("ExpiresAt")
+                        .HasColumnType("datetime2");
+
+                    b.Property<string>("IpAddress")
+                        .HasMaxLength(50)
+                        .HasColumnType("nvarchar(50)");
+
+                    b.Property<bool>("IsUsed")
+                        .HasColumnType("bit");
+
+                    b.Property<DateTime>("RequestedAt")
+                        .HasColumnType("datetime2");
+
+                    b.Property<string>("ResetCode")
+                        .IsRequired()
+                        .HasMaxLength(64)
+                        .HasColumnType("nvarchar(64)");
+
+                    b.Property<DateTime?>("UsedAt")
+                        .HasColumnType("datetime2");
+
+                    b.Property<Guid>("UserId")
+                        .HasColumnType("uniqueidentifier");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("ResetCode")
+                        .IsUnique();
+
+                    b.HasIndex("UserId", "RequestedAt");
+
+                    b.HasIndex("UserId", "IsUsed", "ExpiresAt");
+
+                    b.ToTable("CredentialResetTokens", (string)null);
+                });
+
             modelBuilder.Entity("UserManagementDemo.Domain.Entities.LoginLog", b =>
                 {
                     b.Property<Guid>("Id")
@@ -286,53 +333,6 @@ namespace UserManagementDemo.Infrastructure.Identity.Migrations
                     b.HasIndex("UserId");
 
                     b.ToTable("LoginLogs", (string)null);
-                });
-
-            modelBuilder.Entity("UserManagementDemo.Domain.Entities.PasswordResetRequest", b =>
-                {
-                    b.Property<Guid>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("uniqueidentifier");
-
-                    b.Property<string>("Channel")
-                        .IsRequired()
-                        .HasMaxLength(10)
-                        .HasColumnType("nvarchar(10)");
-
-                    b.Property<DateTime?>("CompletedAt")
-                        .HasColumnType("datetime2");
-
-                    b.Property<DateTime>("ExpiresAt")
-                        .HasColumnType("datetime2");
-
-                    b.Property<string>("IpAddress")
-                        .HasMaxLength(50)
-                        .HasColumnType("nvarchar(50)");
-
-                    b.Property<bool>("IsUsed")
-                        .HasColumnType("bit");
-
-                    b.Property<DateTime>("RequestedAt")
-                        .HasColumnType("datetime2");
-
-                    b.Property<string>("ResetCode")
-                        .IsRequired()
-                        .HasMaxLength(64)
-                        .HasColumnType("nvarchar(64)");
-
-                    b.Property<Guid>("UserId")
-                        .HasColumnType("uniqueidentifier");
-
-                    b.HasKey("Id");
-
-                    b.HasIndex("ResetCode")
-                        .IsUnique();
-
-                    b.HasIndex("UserId", "RequestedAt");
-
-                    b.HasIndex("UserId", "IsUsed", "ExpiresAt");
-
-                    b.ToTable("PasswordResetRequests", (string)null);
                 });
 
             modelBuilder.Entity("UserManagementDemo.Domain.Entities.RefreshToken", b =>
@@ -431,10 +431,10 @@ namespace UserManagementDemo.Infrastructure.Identity.Migrations
                         .IsRequired();
                 });
 
-            modelBuilder.Entity("UserManagementDemo.Domain.Entities.LoginLog", b =>
+            modelBuilder.Entity("UserManagementDemo.Domain.Entities.CredentialResetToken", b =>
                 {
                     b.HasOne("UserManagementDemo.Domain.Entities.ApplicationUser", "User")
-                        .WithMany("LoginLogs")
+                        .WithMany("CredentialResetTokens")
                         .HasForeignKey("UserId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
@@ -442,10 +442,10 @@ namespace UserManagementDemo.Infrastructure.Identity.Migrations
                     b.Navigation("User");
                 });
 
-            modelBuilder.Entity("UserManagementDemo.Domain.Entities.PasswordResetRequest", b =>
+            modelBuilder.Entity("UserManagementDemo.Domain.Entities.LoginLog", b =>
                 {
                     b.HasOne("UserManagementDemo.Domain.Entities.ApplicationUser", "User")
-                        .WithMany("PasswordResetRequests")
+                        .WithMany("LoginLogs")
                         .HasForeignKey("UserId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
@@ -466,9 +466,9 @@ namespace UserManagementDemo.Infrastructure.Identity.Migrations
 
             modelBuilder.Entity("UserManagementDemo.Domain.Entities.ApplicationUser", b =>
                 {
-                    b.Navigation("LoginLogs");
+                    b.Navigation("CredentialResetTokens");
 
-                    b.Navigation("PasswordResetRequests");
+                    b.Navigation("LoginLogs");
 
                     b.Navigation("RefreshTokens");
                 });

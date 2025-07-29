@@ -23,7 +23,7 @@ public interface IUserRepository
     Task<bool> ExistsAsync(Guid id, CancellationToken cancellationToken = default);
     Task<bool> ExistsByUserNameAsync(string userName, CancellationToken cancellationToken = default);
 
-    Task<ApplicationUser?> GetByUserNameOrMobileOrEmailAsync(string userNameOrMobileOrEmail, CancellationToken cancellationToken = default);
+    Task<ApplicationUser?> GetByUserNameOrMobileAsync(string userNameOrMobileOrEmail, CancellationToken cancellationToken = default);
 
     Task<IReadOnlyList<ApplicationUser>> GetByStatusAsync(UserStatus status, CancellationToken cancellationToken = default);
 

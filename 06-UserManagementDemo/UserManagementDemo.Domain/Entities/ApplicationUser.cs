@@ -22,12 +22,9 @@ public class ApplicationUser : IdentityUser<Guid>, IAuditableEntity, ISoftDeleta
     public bool IsPasswordChangeRequired { get; set; } = false;
     public DateTime PasswordChangedAt { get; set; }
 
+    public ICollection<CredentialResetToken> CredentialResetTokens { get; set; } = new List<CredentialResetToken>();
     public ICollection<RefreshToken> RefreshTokens { get; set; } = new List<RefreshToken>();
     public ICollection<LoginLog> LoginLogs { get; set; } = new List<LoginLog>();
-    public ICollection<PasswordResetRequest> PasswordResetRequests { get; set; } = new List<PasswordResetRequest>();
 
-    public ApplicationUser()
-    {
-
-    }
+    public ApplicationUser() { }
 }

@@ -16,11 +16,14 @@ public class LogoutCommandHandler : IRequestHandler<LogoutCommand, bool>
 
     public async Task<bool> Handle(LogoutCommand request, CancellationToken cancellationToken)
     {
+        // Get refresh token by token string
         var token = await _unitOfWork.RefreshToken.GetByTokenAsync(request.RefreshToken, cancellationToken);
 
+        // Token not found or already revoked
         if (token == null || token.Revoked != null)
             return false;
 
+        // Revoke token
         token.Revoked = DateTime.UtcNow;
 
         await _unitOfWork.CommitAsync(cancellationToken);

@@ -1,12 +1,11 @@
 ﻿using MediatR;
 using AutoMapper;
 using DevSandbox.Shared.Kernel.Exceptions;
-using UserManagementDemo.Application.Common.Interfaces.Repositories;
-using UserManagementDemo.Application.Common.Interfaces.Security;
 using UserManagementDemo.Application.Common.Interfaces.Services;
 using UserManagementDemo.Application.Features.Users.Dtos;
 using UserManagementDemo.Domain.Entities;
 using UserManagementDemo.Domain.Enums;
+using Microsoft.AspNetCore.Identity;
 
 namespace UserManagementDemo.Application.Features.Users.Commands;
 
@@ -14,48 +13,54 @@ public record CreateUserCommand(CreateUserDto CreateUser) : IRequest<CreateUserR
 
 public class CreateUserCommandHandler : IRequestHandler<CreateUserCommand, CreateUserResultDto>
 {
-    private readonly IIdentityUnitOfWork _uow;
+    private readonly UserManager<ApplicationUser> _userManager;
     private readonly IMapper _mapper;
-    private readonly ICustomPasswordHasher _hasher;
-    private readonly ICurrentUserService _currentUser;
+    private readonly ICurrentUserService _service;
 
     public CreateUserCommandHandler(
-        IIdentityUnitOfWork uow,
+        UserManager<ApplicationUser> userManager,
         IMapper mapper,
-        ICustomPasswordHasher hasher,
-        ICurrentUserService currentUser)
+        ICurrentUserService service)
     {
-        _uow = uow;
+        _userManager = userManager;
         _mapper = mapper;
-        _hasher = hasher;
-        _currentUser = currentUser;
+        _service = service;
     }
+
 
     public async Task<CreateUserResultDto> Handle(CreateUserCommand request, CancellationToken cancellationToken)
     {
-        if (await _uow.User.ExistsByUserNameAsync(request.CreateUser.UserName, cancellationToken))
+        // Check for duplicate username
+        var existing = await _userManager.FindByNameAsync(request.CreateUser.UserName);
+        if (existing != null)
             throw new ConflictException("Username is already taken.");
 
+        // Map DTO to entity (excluding password)
         var user = _mapper.Map<ApplicationUser>(request.CreateUser);
 
         user.Id = Guid.NewGuid();
-        user.PasswordHash = _hasher.HashPassword(user, request.CreateUser.Password);
         user.Status = UserStatus.Active;
         user.CreatedAt = DateTime.UtcNow;
-        user.CreatedBy = _currentUser.Session.UserName;
+        user.CreatedBy = _service.Session.UserName;
         user.Role = (UserRole)request.CreateUser.Role;
         user.IsPasswordChangeRequired = true;
         user.IsDeleted = false;
 
-        await _uow.User.AddAsync(user, cancellationToken);
+        // Create user (UserManager handles password hashing)
+        var result = await _userManager.CreateAsync(user, request.CreateUser.Password);
 
-        // Commit
-        await _uow.CommitAsync(cancellationToken);
+        if (!result.Succeeded)
+            throw new ValidationException(result.Errors.Select(e => e.Description).ToList());
+
+        // Optionally add role (if using Identity roles)
+        // await _userManager.AddToRoleAsync(user, user.Role.ToString());
+
+        // Additional logic (e.g., send email verification) can be placed here
 
         return new CreateUserResultDto
         {
             UserId = user.Id,
-            UserName = user.UserName ?? request.CreateUser.UserName,
+            UserName = user.UserName!,
             Role = user.Role.ToString()
         };
     }

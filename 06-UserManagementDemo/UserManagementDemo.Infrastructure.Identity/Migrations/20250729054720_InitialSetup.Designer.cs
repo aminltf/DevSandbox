@@ -12,7 +12,7 @@ using UserManagementDemo.Infrastructure.Identity.Contexts;
 namespace UserManagementDemo.Infrastructure.Identity.Migrations
 {
     [DbContext(typeof(IdentityContext))]
-    [Migration("20250728045753_InitialSetup")]
+    [Migration("20250729054720_InitialSetup")]
     partial class InitialSetup
     {
         /// <inheritdoc />
@@ -227,6 +227,9 @@ namespace UserManagementDemo.Infrastructure.Identity.Migrations
                         .HasMaxLength(256)
                         .HasColumnType("nvarchar(256)");
 
+                    b.Property<DateTime>("PasswordChangedAt")
+                        .HasColumnType("datetime2");
+
                     b.Property<string>("PasswordHash")
                         .HasColumnType("nvarchar(max)");
 
@@ -263,6 +266,53 @@ namespace UserManagementDemo.Infrastructure.Identity.Migrations
                         .HasFilter("[NormalizedUserName] IS NOT NULL");
 
                     b.ToTable("Users", (string)null);
+                });
+
+            modelBuilder.Entity("UserManagementDemo.Domain.Entities.CredentialResetToken", b =>
+                {
+                    b.Property<Guid>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("uniqueidentifier");
+
+                    b.Property<string>("Channel")
+                        .IsRequired()
+                        .HasMaxLength(10)
+                        .HasColumnType("nvarchar(10)");
+
+                    b.Property<DateTime>("ExpiresAt")
+                        .HasColumnType("datetime2");
+
+                    b.Property<string>("IpAddress")
+                        .HasMaxLength(50)
+                        .HasColumnType("nvarchar(50)");
+
+                    b.Property<bool>("IsUsed")
+                        .HasColumnType("bit");
+
+                    b.Property<DateTime>("RequestedAt")
+                        .HasColumnType("datetime2");
+
+                    b.Property<string>("ResetCode")
+                        .IsRequired()
+                        .HasMaxLength(64)
+                        .HasColumnType("nvarchar(64)");
+
+                    b.Property<DateTime?>("UsedAt")
+                        .HasColumnType("datetime2");
+
+                    b.Property<Guid>("UserId")
+                        .HasColumnType("uniqueidentifier");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("ResetCode")
+                        .IsUnique();
+
+                    b.HasIndex("UserId", "RequestedAt");
+
+                    b.HasIndex("UserId", "IsUsed", "ExpiresAt");
+
+                    b.ToTable("CredentialResetTokens", (string)null);
                 });
 
             modelBuilder.Entity("UserManagementDemo.Domain.Entities.LoginLog", b =>
@@ -325,6 +375,9 @@ namespace UserManagementDemo.Infrastructure.Identity.Migrations
 
                     b.HasKey("Id");
 
+                    b.HasIndex("Token")
+                        .IsUnique();
+
                     b.HasIndex("UserId");
 
                     b.ToTable("RefreshTokens", (string)null);
@@ -381,6 +434,17 @@ namespace UserManagementDemo.Infrastructure.Identity.Migrations
                         .IsRequired();
                 });
 
+            modelBuilder.Entity("UserManagementDemo.Domain.Entities.CredentialResetToken", b =>
+                {
+                    b.HasOne("UserManagementDemo.Domain.Entities.ApplicationUser", "User")
+                        .WithMany("CredentialResetTokens")
+                        .HasForeignKey("UserId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("User");
+                });
+
             modelBuilder.Entity("UserManagementDemo.Domain.Entities.LoginLog", b =>
                 {
                     b.HasOne("UserManagementDemo.Domain.Entities.ApplicationUser", "User")
@@ -405,6 +469,8 @@ namespace UserManagementDemo.Infrastructure.Identity.Migrations
 
             modelBuilder.Entity("UserManagementDemo.Domain.Entities.ApplicationUser", b =>
                 {
+                    b.Navigation("CredentialResetTokens");
+
                     b.Navigation("LoginLogs");
 
                     b.Navigation("RefreshTokens");
