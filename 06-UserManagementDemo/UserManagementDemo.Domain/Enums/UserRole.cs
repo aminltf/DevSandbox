@@ -1,6 +1,4 @@
-﻿using System.ComponentModel.DataAnnotations;
-
-namespace UserManagementDemo.Domain.Enums;
+﻿namespace UserManagementDemo.Domain.Enums;
 
 public enum UserRole
 {

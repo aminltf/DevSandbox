@@ -1,5 +1,6 @@
 ﻿using MediatR;
 using Microsoft.AspNetCore.Identity;
+using UserManagementDemo.Application.Common.Interfaces.Services;
 using UserManagementDemo.Application.Features.Users.Dtos;
 using UserManagementDemo.Domain.Entities;
 using UserManagementDemo.Domain.Enums;
@@ -11,15 +12,17 @@ public record UpdateUserCommand(UpdateUserDto UpdateUser) : IRequest<UpdateUserR
 public class UpdateUserCommandHandler : IRequestHandler<UpdateUserCommand, UpdateUserResultDto>
 {
     private readonly UserManager<ApplicationUser> _userManager;
+    private readonly ICurrentUserService _currentUser;
 
-    public UpdateUserCommandHandler(UserManager<ApplicationUser> userManager)
+    public UpdateUserCommandHandler(UserManager<ApplicationUser> userManager, ICurrentUserService currentUser)
     {
         _userManager = userManager;
+        _currentUser = currentUser;
     }
 
     public async Task<UpdateUserResultDto> Handle(UpdateUserCommand request, CancellationToken cancellationToken)
     {
-        // Find user by Id
+        // Find user
         var user = await _userManager.FindByIdAsync(request.UpdateUser.Id.ToString());
         if (user == null || user.IsDeleted)
             return new UpdateUserResultDto { Success = false, Message = "User not found." };
@@ -31,8 +34,23 @@ public class UpdateUserCommandHandler : IRequestHandler<UpdateUserCommand, Updat
             user.LastName = request.UpdateUser.LastName;
         if (!string.IsNullOrWhiteSpace(request.UpdateUser.Email) && user.Email != request.UpdateUser.Email)
             user.Email = request.UpdateUser.Email;
+
+        // Role can only be changed by Admin
         if (request.UpdateUser.Role.HasValue)
-            user.Role = (UserRole)request.UpdateUser.Role.Value;
+        {
+            if (Enum.TryParse<UserRole>(_currentUser.Session.Role, out var sessionRole) && sessionRole == UserRole.Admin)
+            {
+                user.Role = (UserRole)request.UpdateUser.Role.Value;
+            }
+            else
+            {
+                return new UpdateUserResultDto
+                {
+                    Success = false,
+                    Message = "Only administrators are allowed to change user roles."
+                };
+            }
+        }
 
         var result = await _userManager.UpdateAsync(user);
         if (!result.Succeeded)

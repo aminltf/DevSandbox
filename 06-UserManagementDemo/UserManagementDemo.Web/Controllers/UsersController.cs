@@ -13,6 +13,7 @@ namespace UserManagementDemo.Web.Controllers;
 
 [ApiController]
 [Route("api/[controller]")]
+[ApiVersion("1.0")]
 //[Authorize(Roles = "Admin")]
 public class UsersController : ControllerBase
 {
@@ -23,6 +24,7 @@ public class UsersController : ControllerBase
         _mediator = mediator;
     }
 
+    [Authorize(Roles = "Admin")]
     [HttpPost("create")]
     public async Task<IActionResult> Create([FromBody] CreateUserDto dto, CancellationToken cancellationToken)
     {
@@ -33,33 +35,60 @@ public class UsersController : ControllerBase
     }
 
     [HttpPut("{id:guid}/update")]
-    public async Task<IActionResult> UpdateUser(Guid id, [FromBody] UpdateUserDto dto)
+    public async Task<IActionResult> UpdateUser(Guid id, [FromBody] UpdateUserDto dto, CancellationToken cancellationToken)
     {
         dto.Id = id;
-        var result = await _mediator.Send(new UpdateUserCommand(dto));
+        var result = await _mediator.Send(new UpdateUserCommand(dto), cancellationToken);
         if (!result.Success)
             return BadRequest(result);
         return Ok(result);
     }
 
     [HttpPost("{id:guid}/activate")]
-    public async Task<IActionResult> ActivateUser(Guid id)
+    public async Task<IActionResult> ActivateUser(Guid id, CancellationToken cancellationToken)
     {
-        var result = await _mediator.Send(new ActivateUserCommand(id));
+        var result = await _mediator.Send(new ActivateUserCommand(id), cancellationToken);
         if (!result.Success)
             return BadRequest(result);
         return Ok(result);
     }
 
     [HttpPost("{id:guid}/deactivate")]
-    public async Task<IActionResult> DeactivateUser(Guid id)
+    public async Task<IActionResult> DeactivateUser(Guid id, CancellationToken cancellationToken)
     {
-        var result = await _mediator.Send(new DeactivateUserCommand(id));
+        var result = await _mediator.Send(new DeactivateUserCommand(id), cancellationToken);
         if (!result.Success)
             return BadRequest(result);
         return Ok(result);
     }
 
+    [HttpDelete("{id:guid}/soft-delete")]
+    public async Task<IActionResult> SoftDeleteUser(Guid id, CancellationToken cancellationToken)
+    {
+        var result = await _mediator.Send(new SoftDeleteUserCommand(id), cancellationToken);
+        if (!result.Success)
+            return BadRequest(result);
+        return Ok(result);
+    }
+
+    [HttpPost("{id:guid}/restore")]
+    public async Task<IActionResult> RestoreUser(Guid id, CancellationToken cancellationToken)
+    {
+        var result = await _mediator.Send(new RestoreUserCommand(id), cancellationToken);
+        if (!result.Success)
+            return BadRequest(result);
+        return Ok(result);
+    }
+
+    [Authorize(Roles = "Admin")]
+    [HttpDelete("{id:guid}/delete")]
+    public async Task<IActionResult> DeleteUser(Guid id, CancellationToken cancellationToken)
+    {
+        var result = await _mediator.Send(new DeleteUserCommand(id), cancellationToken);
+        if (!result.Success)
+            return BadRequest(result);
+        return Ok(result);
+    }
 
     [HttpGet("{id:guid}/get-by-id")]
     public async Task<IActionResult> GetById(Guid id, CancellationToken cancellationToken)

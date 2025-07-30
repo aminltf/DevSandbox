@@ -17,6 +17,7 @@
   </ItemGroup>
 
   <ItemGroup>
+    <ProjectReference Include="..\..\_shared\DevSandbox.Shared.Web\DevSandbox.Shared.Web.csproj" />
     <ProjectReference Include="..\UserManagementDemo.Infrastructure.Identity\UserManagementDemo.Infrastructure.Identity.csproj" />
   </ItemGroup>
 
