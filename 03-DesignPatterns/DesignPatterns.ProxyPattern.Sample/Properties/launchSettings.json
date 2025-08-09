@@ -1,0 +1,10 @@
+{
+  "profiles": {
+    "DesignPatterns.ProxyPattern.Sample": {
+      "commandName": "Project"
+    },
+    "Container (Dockerfile)": {
+      "commandName": "Docker"
+    }
+  }
+}

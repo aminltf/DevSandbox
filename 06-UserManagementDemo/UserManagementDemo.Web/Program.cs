@@ -9,6 +9,11 @@ using UserManagementDemo.Infrastructure.Identity;
 using UserManagementDemo.Infrastructure.Identity.Contexts;
 using DevSandbox.Shared.Web.Extensions;
 
+// ToDo: Sanitize - XSS attack 
+// ToDo: attacks1: sql injection - xss - csrf - shell upload - session fixation - session hijack - buffer overflow - account takeover - brute force - mass assignment - idor - access control bypass -  ...
+// ToDo: attacks2: ssrf - xxe - authentication bypass - privilege escalation - 
+// ToDo: google dork
+
 var builder = WebApplication.CreateBuilder(args);
 
 // Add services to the container.
